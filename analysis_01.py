@@ -1,3 +1,4 @@
+#analysis with all modulation parameters free
 
 import numpy as np 
 from scipy import optimize , stats
