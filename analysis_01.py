@@ -7,19 +7,19 @@ import nestle
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
-f=os.path.expanduser("~")+"/Desktop/COSINE100/data/c2_data.txt"
+f=os.path.expanduser("~")+"/Desktop/COSINE100/data/crystal2.txt"
 data1 = np.loadtxt(f,delimiter=',')                    
 
-g=os.path.expanduser("~")+"/Desktop/COSINE100/data/c3_data.txt"
+g=os.path.expanduser("~")+"/Desktop/COSINE100/data/crystal3.txt"
 data2 = np.loadtxt(g,delimiter=',')                    
 
-h=os.path.expanduser("~")+"/Desktop/COSINE100/data/c4_data.txt"
+h=os.path.expanduser("~")+"/Desktop/COSINE100/data/crystal4.txt"
 data3 = np.loadtxt(h,delimiter=',')      
 
-k=os.path.expanduser("~")+"/Desktop/COSINE100/data/c6_data.txt"
+k=os.path.expanduser("~")+"/Desktop/COSINE100/data/crystal6.txt"
 data4 = np.loadtxt(k,delimiter=',')                    
 
-l=os.path.expanduser("~")+"/Desktop/COSINE100/data/c7_data.txt"
+l=os.path.expanduser("~")+"/Desktop/COSINE100/data/crystal7.txt"
 data5 = np.loadtxt(l,delimiter=',')                    
 
 data=np.hstack((data1,data2,data3,data4,data5))
