@@ -1,10 +1,4 @@
 
-
-# ================================== FINAL ===================================
-# background optimization
-# cosine fit - NESTLE
-# model comparison -freq, aic, bic, bayes factor
-
 import numpy as np 
 from scipy import optimize , stats
 import os
@@ -13,40 +7,23 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
 f=os.path.expanduser("~")+"/Desktop/COSINE100/data/c2_data.txt"
-#path=os.path.expanduser("~")+"/Desktop/COSINE100/data/"+f
-#t=open(path, "r")
 data1 = np.loadtxt(f,delimiter=',')                    
-#t.close()
-
 
 g=os.path.expanduser("~")+"/Desktop/COSINE100/data/c3_data.txt"
-#path=os.path.expanduser("~")+"/Desktop/COSINE100/data/"+f
-#t=open(path, "r")
 data2 = np.loadtxt(g,delimiter=',')                    
-#t.close()
 
 h=os.path.expanduser("~")+"/Desktop/COSINE100/data/c4_data.txt"
-#path=os.path.expanduser("~")+"/Desktop/COSINE100/data/"+f
-#t=open(path, "r")
-data3 = np.loadtxt(h,delimiter=',')                    
-#t.close()
-
+data3 = np.loadtxt(h,delimiter=',')      
 
 k=os.path.expanduser("~")+"/Desktop/COSINE100/data/c6_data.txt"
-#path=os.path.expanduser("~")+"/Desktop/COSINE100/data/"+f
-#t=open(path, "r")
 data4 = np.loadtxt(k,delimiter=',')                    
-#t.close()
 
 l=os.path.expanduser("~")+"/Desktop/COSINE100/data/c7_data.txt"
-#path=os.path.expanduser("~")+"/Desktop/COSINE100/data/"+f
-#t=open(path, "r")
 data5 = np.loadtxt(l,delimiter=',')                    
-#t.close()
 
 data=np.hstack((data1,data2,data3,data4,data5))
 
-
+#null hypothesis (background only)
 def fit_bg(x,c,p0,p1):
     	return c + p0*np.exp(-np.log(2)*x/p1)
 
@@ -109,6 +86,7 @@ def log_likelihood_bg(P):
 
         return sum(stats.norm.logpdf(*args) for args in zip(data[1],y_fit,sigma))
 
+#modulation hypothesis
 def fit_cosine(x,c,p0,p1,A,w,t_0):
     	return c + p0*np.exp(-np.log(2)*x/p1) + A*np.cos(w*(x-t_0))
 
@@ -162,25 +140,7 @@ def log_likelihood_cosine(P):
     y_fit=np.hstack((y_fit1,y_fit2,y_fit3,y_fit4,y_fit5))
     return sum(stats.norm.logpdf(*args) for args in zip(data[1],y_fit,sigma))
 
-
-guess_w=[0.1,0.0172,0]
-guess=np.hstack((cos1.x,cos2.x,cos3.x,cos4.x,cos5.x,guess_w))
-res = optimize.minimize(chi2_cosine, guess,method='BFGS')
-print (res.fun)
-cosine_fit=res.x
-"""
-t=log_likelihood_cosine(res.x)[0]
-
-sig=log_likelihood_cosine(res.x)[1]
-y_fit=log_likelihood_cosine(res.x)[2]
-r = (data[1] - y_fit)/sig
-
-t1=np.prod(1/(np.sqrt(2*np.pi*(sig**2))))
-t2=np.prod(np.exp(-r*r/2.0))
-t0=t1*t2"""
-
-
-#-----------------------------------------------------------------------------
+#model comparison techniques
 
 def frequentist(cos_fin,k_fin):
     c1=chi2_cosine(cos_fin)
@@ -205,12 +165,6 @@ def BIC(cos_fin,k_fin):
     del_bic= np.abs(bic_bg-bic_cosine)
     print("BIC cosine=",'%.2f'%bic_cosine,"BIC bg=",'%.2f'%bic_bg)
     print ("diff in BIC values = ",'%.2f'%del_bic)
-
-def bayesian(Zbg,Zcos):  
-    Z= np.exp(Zcos-Zbg)
-    print('Bayes Factor: ',Z)
-
-#-----------------------------------------------------------------------------
 
 def plot(bg_fit, cosine_fit):
        
@@ -298,16 +252,17 @@ def plot(bg_fit, cosine_fit):
     plt.savefig("c_an_fig.png")
 #============================================================================
 
+#chi2 minimization for modulation model
+guess_w=[0.1,0.0172,0]
+guess=np.hstack((cos1.x,cos2.x,cos3.x,cos4.x,cos5.x,guess_w))
+res = optimize.minimize(chi2_cosine, guess,method='BFGS')
+cosine_fit=res.x
 
-#background-only fit by chi-sq minimization
+#background-only fit obtained earlier by chi-sq minimization
 bg_est=np.hstack((cos1.x,cos2.x,cos3.x,cos4.x,cos5.x))
+
 print('background\n',bg_est)
 print('modulation\n',cosine_fit)
-# background only fits using nestle
-#Z1, bg_fit = nestle_multi_bg()
-
-# cosine fits using nestle
-#Z2, cosine_fit = nestle_multi_cos()
 
 plot(bg_est, cosine_fit)
 
@@ -318,4 +273,3 @@ AIC(cosine_fit,bg_est)
 
 BIC(cosine_fit,bg_est)
 
-#bayesian(Z1,Z2)
