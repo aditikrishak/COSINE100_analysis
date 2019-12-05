@@ -14,19 +14,19 @@ from contextlib import closing
 
 
 #f=os.path.expanduser("~")+"/Desktop/COSINE100/data/c2_data.txt"
-data1 = np.loadtxt("c2_data.txt",delimiter=',')                    
+data1 = np.loadtxt("crystal2.txt",delimiter=',')                    
 
 #g=os.path.expanduser("~")+"/Desktop/COSINE100/data/c3_data.txt"
-data2 = np.loadtxt("c3_data.txt",delimiter=',')                    
+data2 = np.loadtxt("crystal3.txt",delimiter=',')                    
 
 #h=os.path.expanduser("~")+"/Desktop/COSINE100/data/c4_data.txt"
-data3 = np.loadtxt("c4_data.txt",delimiter=',')                    
+data3 = np.loadtxt("crystal4.txt",delimiter=',')                    
 
 #k=os.path.expanduser("~")+"/Desktop/COSINE100/data/c6_data.txt"
-data4 = np.loadtxt("c6_data.txt",delimiter=',')                    
+data4 = np.loadtxt("crystal6.txt",delimiter=',')                    
 
 #l=os.path.expanduser("~")+"/Desktop/COSINE100/data/c7_data.txt"
-data5 = np.loadtxt("c7_data.txt",delimiter=',')                    
+data5 = np.loadtxt("crystal7.txt",delimiter=',')                    
 
 data=np.hstack((data1,data2,data3,data4,data5))
 tol=0.1
