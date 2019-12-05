@@ -8,20 +8,20 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
 
-f=input('enter path to data file : ')
-data1 = np.loadtxt(f,delimiter=',')                    
+#f=input('enter path to data file : ')
+data1 = np.loadtxt('crystal2.txt',delimiter=',')                    
 
-g=input('enter path to data file : ')
-data2 = np.loadtxt(g,delimiter=',')                    
+#g=input('enter path to data file : ')
+data2 = np.loadtxt('crystal3.txt',delimiter=',')                    
 
-h=input('enter path to data file : ')
-data3 = np.loadtxt(h,delimiter=',')                    
+#h=input('enter path to data file : ')
+data3 = np.loadtxt('crystal4.txt',delimiter=',')                    
 
-k=input('enter path to data file : ')
-data4 = np.loadtxt(k,delimiter=',')                    
+#k=input('enter path to data file : ')
+data4 = np.loadtxt('crystal6.txt',delimiter=',')                    
 
-l=input('enter path to data file : ')
-data5 = np.loadtxt(l,delimiter=',')                    
+#l=input('enter path to data file : ')
+data5 = np.loadtxt('crystal7.txt',delimiter=',')        
 
 data=np.hstack((data1,data2,data3,data4,data5))
 
@@ -32,34 +32,34 @@ def fit_bg(x,c,p0,p1):
 #background-only best fit (for each data set separately)
 guess=[0,1,1000]
 def chi2(P,DATA):
-        sigma1=[ np.sqrt( (DATA[3,i]**2) + ((-P[1]*np.log(2)*np.exp(-np.log(2)*DATA[0,i]/P[2])/P[2])*DATA[2,i])**2 ) for i in range(len(DATA[0])) ]
+        sigma1=DATA[3]
         y_fit1=fit_bg(DATA[0],P[0],P[1],P[2])
         r=(DATA[1]-y_fit1)/sigma1
         return np.sum(r**2)
 #background fits
-cos1 = optimize.minimize(chi2, guess,args=data1,method='BFGS')
-cos2 = optimize.minimize(chi2, guess,args=data2,method='BFGS')
-cos3 = optimize.minimize(chi2, guess,args=data3,method='BFGS')
-cos4 = optimize.minimize(chi2, guess,args=data4,method='BFGS')
-cos5 = optimize.minimize(chi2, guess,args=data5,method='BFGS')
-
+        
+bnd=((1e-10,None),(1e-10,None),(1e-10,None))
+cos1 = optimize.minimize(chi2, guess,args=data1,method='SLSQP',bounds=bnd)
+cos2 = optimize.minimize(chi2, guess,args=data2,method='SLSQP',bounds=bnd)
+cos3 = optimize.minimize(chi2, guess,args=data3,method='SLSQP',bounds=bnd)
+cos4 = optimize.minimize(chi2, guess,args=data4,method='SLSQP',bounds=bnd)
+cos5 = optimize.minimize(chi2, guess,args=data5,method='SLSQP',bounds=bnd)
+        
+    
 def chi2_bg(P):
     
-        sigma1=[ np.sqrt( (data1[3,i]**2) + ((-P[1]*np.log(2)*np.exp(-np.log(2)*data1[0,i]/P[2])/P[2])*data1[2,i])**2 ) for i in range(len(data1[0])) ]
         y_fit1=fit_bg(data1[0],P[0],P[1],P[2])
         
-        sigma2=[ np.sqrt( (data2[3,i]**2) + ((-P[4]*np.log(2)*np.exp(-np.log(2)*data2[0,i]/P[5])/P[5])*data2[2,i])**2 ) for i in range(len(data2[0])) ]
         y_fit2=fit_bg(data2[0],P[3],P[4],P[5])
         
-        sigma3=[ np.sqrt( (data3[3,i]**2) + ((-P[7]*np.log(2)*np.exp(-np.log(2)*data3[0,i]/P[8])/P[8])*data3[2,i])**2 ) for i in range(len(data3[0])) ]
         y_fit3=fit_bg(data3[0],P[6],P[7],P[8])
         
-        sigma4=[ np.sqrt( (data4[3,i]**2) + ((-P[10]*np.log(2)*np.exp(-np.log(2)*data4[0,i]/P[11])/P[11])*data4[2,i])**2 ) for i in range(len(data4[0])) ]
         y_fit4=fit_bg(data4[0],P[9],P[10],P[11])
         
-        sigma5=[ np.sqrt( (data5[3,i]**2) + ((-P[13]*np.log(2)*np.exp(-np.log(2)*data5[0,i]/P[14])/P[14])*data5[2,i])**2 ) for i in range(len(data5[0])) ]
-        y_fit5=fit_bg(data5[0],P[12],P[13],P[14])    
+        y_fit5=fit_bg(data5[0],P[12],P[13],P[14])   
         
+        sigma1,sigma2,sigma3,sigma4,sigma5= data1[3],data2[3],data3[3],data4[3],data5[3]
+
         y_fit=np.hstack((y_fit1,y_fit2,y_fit3,y_fit4,y_fit5))
         sigma=np.hstack((sigma1,sigma2,sigma3,sigma4,sigma5))        
 
@@ -68,20 +68,18 @@ def chi2_bg(P):
 
 def log_likelihood_bg(P):
     
-        sigma1=[ np.sqrt( (data1[3,i]**2) + ((-P[1]*np.log(2)*np.exp(-np.log(2)*data1[0,i]/P[2])/P[2])*data1[2,i])**2 ) for i in range(len(data1[0])) ]
+    
         y_fit1=fit_bg(data1[0],P[0],P[1],P[2])
         
-        sigma2=[ np.sqrt( (data2[3,i]**2) + ((-P[4]*np.log(2)*np.exp(-np.log(2)*data2[0,i]/P[5])/P[5])*data2[2,i])**2 ) for i in range(len(data2[0])) ]
         y_fit2=fit_bg(data2[0],P[3],P[4],P[5])
         
-        sigma3=[ np.sqrt( (data3[3,i]**2) + ((-P[7]*np.log(2)*np.exp(-np.log(2)*data3[0,i]/P[8])/P[8])*data3[2,i])**2 ) for i in range(len(data3[0])) ]
         y_fit3=fit_bg(data3[0],P[6],P[7],P[8])
         
-        sigma4=[ np.sqrt( (data4[3,i]**2) + ((-P[10]*np.log(2)*np.exp(-np.log(2)*data4[0,i]/P[11])/P[11])*data4[2,i])**2 ) for i in range(len(data4[0])) ]
         y_fit4=fit_bg(data4[0],P[9],P[10],P[11])
         
-        sigma5=[ np.sqrt( (data5[3,i]**2) + ((-P[13]*np.log(2)*np.exp(-np.log(2)*data5[0,i]/P[14])/P[14])*data5[2,i])**2 ) for i in range(len(data5[0])) ]
-        y_fit5=fit_bg(data5[0],P[12],P[13],P[14])    
+        y_fit5=fit_bg(data5[0],P[12],P[13],P[14])   
+        
+        sigma1,sigma2,sigma3,sigma4,sigma5= data1[3],data2[3],data3[3],data4[3],data5[3]
 
         y_fit=np.hstack((y_fit1,y_fit2,y_fit3,y_fit4,y_fit5))
         sigma=np.hstack((sigma1,sigma2,sigma3,sigma4,sigma5))
@@ -97,53 +95,40 @@ def fit_cosine(x,c,p0,p1,A,t_0):
     	return c + p0*np.exp(-np.log(2)*x/p1) + A*np.cos(w*(x-t_0))
 
 def chi2_cosine(P):
-    A = P[15]
-    t_0=P[16]
-    sigma1=[ np.sqrt( (data1[3,i]**2) + ((-P[1]*np.log(2)*np.exp(-np.log(2)*data1[0,i]/P[2])/P[2] - A*w*np.sin(w*(data1[0][i]-t_0))) *data1[2,i])**2 ) for i in range(len(data1[0])) ]
     y_fit1=fit_cosine(data1[0],P[0],P[1],P[2],P[15],P[16])
     
-    sigma2=[ np.sqrt( (data2[3,i]**2) + ((-P[4]*np.log(2)*np.exp(-np.log(2)*data2[0,i]/P[5])/P[5] - A*w*np.sin(w*(data2[0][i]-t_0))) *data2[2,i])**2 ) for i in range(len(data2[0])) ]    
     y_fit2=fit_cosine(data2[0],P[3],P[4],P[5],P[15],P[16])
     
-    sigma3=[ np.sqrt( (data3[3,i]**2) + ((-P[7]*np.log(2)*np.exp(-np.log(2)*data3[0,i]/P[8])/P[8] - A*w*np.sin(w*(data3[0][i]-t_0))) *data3[2,i])**2 ) for i in range(len(data3[0])) ]
     y_fit3=fit_cosine(data3[0],P[6],P[7],P[8],P[15],P[16])
     
-    sigma4=[ np.sqrt( (data4[3,i]**2) + ((-P[10]*np.log(2)*np.exp(-np.log(2)*data4[0,i]/P[11])/P[11] - A*w*np.sin(w*(data4[0][i]-t_0))) *data4[2,i])**2 ) for i in range(len(data4[0])) ]
     y_fit4=fit_cosine(data4[0],P[9],P[10],P[11],P[15],P[16])
     
-    sigma5=[ np.sqrt( (data5[3,i]**2) + ((-P[13]*np.log(2)*np.exp(-np.log(2)*data5[0,i]/P[14])/P[14] - A*w*np.sin(w*(data5[0][i]-t_0))) *data5[2,i])**2 ) for i in range(len(data5[0])) ]
     y_fit5=fit_cosine(data5[0],P[12],P[13],P[14],P[15],P[16])
     
+    sigma1,sigma2,sigma3,sigma4,sigma5= data1[3],data2[3],data3[3],data4[3],data5[3]
+
     sigma=np.hstack((sigma1,sigma2,sigma3,sigma4,sigma5))            
     y_fit=np.hstack((y_fit1,y_fit2,y_fit3,y_fit4,y_fit5))
     r = (data[1] - y_fit)/sigma
     return np.sum(r**2)
 
 def log_likelihood_cosine(P):
-    A = P[15]
-    t_0=P[16]
-    sigma1=[ np.sqrt( (data1[3,i]**2) + ((-P[1]*np.log(2)*np.exp(-np.log(2)*data1[0,i]/P[2])/P[2] - A*w*np.sin(w*(data1[0][i]-t_0))) *data1[2,i])**2 ) for i in range(len(data1[0])) ]
     y_fit1=fit_cosine(data1[0],P[0],P[1],P[2],P[15],P[16])
     
-    sigma2=[ np.sqrt( (data2[3,i]**2) + ((-P[4]*np.log(2)*np.exp(-np.log(2)*data2[0,i]/P[5])/P[5] - A*w*np.sin(w*(data2[0][i]-t_0))) *data2[2,i])**2 ) for i in range(len(data2[0])) ]    
     y_fit2=fit_cosine(data2[0],P[3],P[4],P[5],P[15],P[16])
     
-    sigma3=[ np.sqrt( (data3[3,i]**2) + ((-P[7]*np.log(2)*np.exp(-np.log(2)*data3[0,i]/P[8])/P[8] - A*w*np.sin(w*(data3[0][i]-t_0))) *data3[2,i])**2 ) for i in range(len(data3[0])) ]
     y_fit3=fit_cosine(data3[0],P[6],P[7],P[8],P[15],P[16])
     
-    sigma4=[ np.sqrt( (data4[3,i]**2) + ((-P[10]*np.log(2)*np.exp(-np.log(2)*data4[0,i]/P[11])/P[11] - A*w*np.sin(w*(data4[0][i]-t_0))) *data4[2,i])**2 ) for i in range(len(data4[0])) ]
     y_fit4=fit_cosine(data4[0],P[9],P[10],P[11],P[15],P[16])
     
-    sigma5=[ np.sqrt( (data5[3,i]**2) + ((-P[13]*np.log(2)*np.exp(-np.log(2)*data5[0,i]/P[14])/P[14] - A*w*np.sin(w*(data5[0][i]-t_0))) *data5[2,i])**2 ) for i in range(len(data5[0])) ]
     y_fit5=fit_cosine(data5[0],P[12],P[13],P[14],P[15],P[16])
     
+    sigma1,sigma2,sigma3,sigma4,sigma5= data1[3],data2[3],data3[3],data4[3],data5[3]
+
     sigma=np.hstack((sigma1,sigma2,sigma3,sigma4,sigma5))            
     y_fit=np.hstack((y_fit1,y_fit2,y_fit3,y_fit4,y_fit5))
     
-    sigma=np.hstack((sigma1,sigma2,sigma3,sigma4,sigma5))            
-    y_fit=np.hstack((y_fit1,y_fit2,y_fit3,y_fit4,y_fit5))
     return sum(stats.norm.logpdf(*args) for args in zip(data[1],y_fit,sigma))
-#    return sum(stats.norm.logpdf(*args) for args in zip(data[1],y_fit,sigma))
 
 
 #-----------------------------------------------------------------------------
@@ -158,6 +143,8 @@ def frequentist(cos_fin,k_fin):
     p=stats.chi2(2).sf(d)
     print ("p value=",p)
     print("Confidence level : ",stats.norm.isf(p),'\u03C3','\n')
+    print('bg chi2 pdf',  stats.chi2(180).pdf(c2))
+    print('modulation chi2 pdf',  stats.chi2(178).pdf(c1))
     
 def AIC(cos_fin,k_fin):
     aic_bg=chi2_bg(k_fin) + 2*15
@@ -258,21 +245,18 @@ def plot(bg_fit, cosine_fit):
     fig.text(0.5, 0.085, '\nTime (days)', ha='center',fontweight='bold',color='dimgrey',fontsize=17)
     fig.text(0.075, 0.5, '2-6 keV event rate(cpd/kg/keV)',va='center',rotation='vertical',fontweight='bold',fontsize=17,color='dimgrey')
         
-    plt.savefig("c_anal_01_fig.png")
+   # plt.savefig("__fig2__.png")
 #============================================================================
 
 guess_w=[0.1,100]
 guess=np.hstack((cos1.x,cos2.x,cos3.x,cos4.x,cos5.x,guess_w))
-print ("initial guess   ",guess_w)
-res = optimize.minimize(chi2_cosine, guess,method='BFGS')
-#print ("best fit   ",res.x)
+bnd=((1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(None,None))
+res = optimize.minimize(chi2_cosine, guess,method='SLSQP',bounds=bnd)
+
 cosine_fit=res.x
 
 #background-only fit by chi-sq minimization
 bg_est=np.hstack((cos1.x,cos2.x,cos3.x,cos4.x,cos5.x))
-print('background\n',bg_est)
-print('modulation\n',cosine_fit)
-plot(bg_est, cosine_fit)
 
 # Model Comparison
 frequentist(cosine_fit,bg_est)
