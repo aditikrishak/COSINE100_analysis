@@ -125,10 +125,10 @@ def log_likelihood_cosine(P):
     return sum(stats.norm.logpdf(*args) for args in zip(data[1],y_fit,sigma))
 
 
-guess_w=[0.1,0.0172,74]
+guess_w=[0.1,0.0172,150]
 guess=np.hstack((cos1.x,cos2.x,cos3.x,cos4.x,cos5.x,guess_w))
 
-bnd=((1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(None,None))
+bnd=((1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,None),(1e-10,2*np.pi/15),(None,None))
 res = optimize.minimize(chi2_cosine, guess,method='SLSQP',bounds=bnd)
 
 cosine_fit=res.x
