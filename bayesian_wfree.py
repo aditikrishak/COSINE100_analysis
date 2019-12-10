@@ -57,6 +57,9 @@ def fit_cosine(x,c,p0,p1,A,w,t_0):
 
 
 def log_likelihood_cosine(P):
+    A = P[15]
+    w = P[16]
+    t_0=P[17]
     sigma1=[ np.sqrt( (data1[3,i]**2)) for i in range(len(data1[0])) ]
     y_fit1=fit_cosine(data1[0],P[0],P[1],P[2],P[15],P[16],P[17])
     
@@ -84,7 +87,7 @@ a1=100.0*np.max(data[1])
 b1=30000.0
 
 def prior_transform_cos(P):
-        return np.array([a1*P[0],a1*P[1],b1*P[2],a1*P[3],a1*P[4],P[5]*b1,a1*P[6],P[7]*a1,P[8]*b1,P[9]*a1,P[10]*a1,P[11]*b1,P[12]*a1,P[13]*a1,P[14]*b1,P[15]*a1,P[16]*6.2,P[17]*361.0])
+        return np.array([a1*P[0],a1*P[1],b1*P[2],a1*P[3],a1*P[4],P[5]*b1,a1*P[6],P[7]*a1,P[8]*b1,P[9]*a1,P[10]*a1,P[11]*b1,P[12]*a1,P[13]*a1,P[14]*b1,P[15]*a1,P[16]*0.40759+0.0104,P[17]*361.0])
 
 
 def nestle_multi_cos():
@@ -105,6 +108,7 @@ def nestle_multi_cos():
         return res.logz[-1], res.logzerr[-1]
 Z2,Z2err = nestle_multi_cos()
 
-print( "after nestlemulti_cos: all parameters of signal_bkgd free")
+print ("after nestlemulti_cos: all parameters of signal_bkgd free")
 print(Z2)
 print (Z2err)
+
